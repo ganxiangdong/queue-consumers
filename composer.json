@@ -1,0 +1,10 @@
+{
+    "require": {
+        "php-amqplib/php-amqplib": "2.6.3",
+        "xd/queue-consumers-manager": "1.0-beta",
+        "php-curl-class/php-curl-class":"4.6.9",
+        "respect/validation": "0.9.3",
+        "illuminate/database": "5.0.33",
+        "phpunit/phpunit": "4.8.4"
+    }
+}
