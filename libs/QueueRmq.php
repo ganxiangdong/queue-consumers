@@ -85,15 +85,21 @@ trait QueueRmq
         while (true) {
             $msg = $this->getChannel()->basic_get($queueName);
             if ($msg != null) { //获取到了消息，处理业务
-                //处理业务前先连接数据库
-                \Libs\DbManager::connect();
-                //调用业务处理方法
-                $status = call_user_func_array($callBack, [$msg->body]);
-                //处理完业务立马关闭数据库连接
-                \Libs\DbManager::disconnect();
-                if ($status === true) {
-                    //确认消费已处理
-                    $this->getChannel()->basic_ack($msg->delivery_info['delivery_tag']);
+                try {
+                    //处理业务前先连接数据库
+                    \Libs\DbManager::connect();
+                    //调用业务处理方法
+                    $status = call_user_func_array($callBack, [$msg->body]);
+                    //处理完业务立马关闭数据库连接
+                    \Libs\DbManager::disconnect();
+                    if ($status === true) {
+                        //确认消费已处理
+                        $this->getChannel()->basic_ack($msg->delivery_info['delivery_tag']);
+                    }
+                } catch (\Exception $e) {
+                    //异常
+                    $msg = $e->getMessage();
+                    \Libs\Ioc::make('logDefault')->addInfo("异常:{$msg}");
                 }
             }
             

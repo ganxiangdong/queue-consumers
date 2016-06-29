@@ -1204,7 +1204,9 @@ class Builder {
 	{
 		$property = $this->unions ? 'unionLimit' : 'limit';
 
-		if ($value > 0) $this->$property = $value;
+		//end by gxd：允许设置limit 0
+// 		if ($value > 0) $this->$property = $value;
+		$this->$property = $value;
 
 		return $this;
 	}
@@ -1557,7 +1559,6 @@ class Builder {
 	public function exists()
 	{
 		$limit = $this->limit;
-
 		$result = $this->limit(1)->count() > 0;
 
 		$this->limit($limit);

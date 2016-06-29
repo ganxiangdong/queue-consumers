@@ -68,13 +68,12 @@ then
 fi
 
 #开始前正在运行的个数
-runingProcessNum=`ps -o pid -C "php $appPath" | wc -l`
-let runingProcessNum=runingProcessNum-1
+runingProcessNum=`ps -o pid,cmd -C php | grep "$appPath" | wc -l`
 
 #执行对应的命令
 runLogFileName=${appPath##*/}
 runLogFilePath="/var/log/$runLogFileName.log"
-echo -e "\033[33m comsumer运行日志文件:$runLogFilePath \033[0m"
+echo -e "\033[33m consumer运行日志文件:$runLogFilePath \033[0m"
 for ((i=1;i<=processNum;i++))
 do
     php "$appPath" >> "$runLogFilePath" &
@@ -83,8 +82,8 @@ do
 done
 
 #新成功启动的进程数量是否等于指定启动的数量
-currentProcessNum=`ps -o pid -C "php $appPath" | wc -l`
-let startedProcessNum=currentProcessNum-1-runingProcessNum
+currentProcessNum=`ps -o pid,cmd -C php | grep "$appPath" | wc -l`
+let startedProcessNum=currentProcessNum-runingProcessNum
 if [ "$startedProcessNum" == "0" ]
 then
     echo -e "\033[31m 启动失败,你可以查看日志: $runLogFilePath \033[0m"
@@ -92,7 +91,7 @@ then
 fi
 if [ "$startedProcessNum" -lt "$processNum" ]
 then
-    echo -e "\033[33m 部分comsumer启动失败,此次成功启动了$startedProcessNum个comsumer \033[0m"
+    echo -e "\033[33m 部分consumer启动失败,此次成功启动了$startedProcessNum个consumer \033[0m"
     exit
 fi
 

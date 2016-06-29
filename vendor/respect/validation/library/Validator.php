@@ -104,6 +104,10 @@ use Respect\Validation\Rules\AllOf;
  * @method static Validator xdigit(string $additionalChars = null)
  * @method static Validator yes($useLocale = false)
  * @method static Validator zend(mixed $validator, array $params = null)
+ * @method static Validator longInt()
+ * @method static Validator mobile()
+ * @method static Validator idCard()
+ * @method static Validator normalCharacter()
  */
 class Validator extends AllOf
 {
